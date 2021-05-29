@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import csv
 import time
 
+## CHANGEABLE VARIABLES ##
 file_name = "output.csv"
 date_range = "all" # 30d, 60d, 90d, or all
 url = "https://www.vlr.gg/stats/?event_group_id=all&event_id=all&region=all&country=all&min_rounds=1000&min_rating=1600&agent=all&map_id=all&timespan="+date_range
@@ -17,7 +18,7 @@ player_elem_list = driver.find_elements_by_xpath("//td[@class='mod-player mod-a'
 for index in range (1,len(player_elem_list)+1):
     xpath_test = "(//td[@class='mod-player mod-a'])[" + str(index) + "]"
     driver.find_element_by_xpath(xpath_test).click() # Player element, when clicked goes to profile
-    
+
     "Clicking the correct date range for player profile (30d,60d,90d,all)"
     filter_list = driver.find_elements_by_xpath("//a[@class='player-stats-filter-btn ']")
     for elem in filter_list:
@@ -36,11 +37,11 @@ for index in range (1,len(player_elem_list)+1):
             cols = row_elem.findAll('td')
             output_row = [player_name] # Will contain the current row, which will be appended to output_rows
             for col in cols:
-                test = col.find('img', alt=True) # Finding the data containing agent
-                test2 = col.find('span')
-                if (test is not None): # If currently on the Agent column of that respective row
+                agent_elem = col.find('img', alt=True) # Finding the data containing agent
+                usage_elem = col.find('span')
+                if (agent_elem is not None): # If currently on the Agent column of that respective row
                     output_row.append(test['alt'])
-                elif (test2 is not None): # If currently on the Usage column of that respective row
+                elif (usage_elem is not None): # If currently on the Usage column of that respective row
                     val = test2.text
                     output_row.append(val[val.find("(")+1:val.find(")")])
                 else: # Every other column
