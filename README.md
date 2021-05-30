@@ -20,3 +20,12 @@ The generated csv file will contain a header field that is explained below:
 * **A**: Total assists
 * **FK**: Total first kills
 * **FD**: Total first deaths
+
+## player_stats_noagents.py
+Identical to player_stats_agents.py but does not explore and scrape data from the player profiles. Instead it srapes the aggregated data present in the table at https://www.vlr.gg/stats. Applying filter properties and modifying other changeable variables remain the same (under the comment CHANGEABLE VARIABLES), while file naming is defaulted to the same nomenclature as explained above.
+
+The generated csv file will contain a header file, abbreviations that were explained above will not be repeated below:
+* **HS%**: Headshot %
+* **CL%**: Clutch success %
+* **CL**: Clutch success (won/played)
+* **KMAX**: Maximum kills in a single map
