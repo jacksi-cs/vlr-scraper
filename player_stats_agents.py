@@ -41,14 +41,14 @@ for index in range (1,len(player_elem_list)+1):
     soup = BeautifulSoup(driver.page_source, "html.parser")
     table = soup.find("table")
     if (table is not None):
-        row = table.findAll('tr')[1::] # The 0th row is the title row, therefore excluded
-        for row_elem in row:
+        rows = table.findAll('tr')[1::] # The 0th row is the title row, therefore excluded
+        for row_elem in rows:
             player_name = soup.find("h1").text.strip()
             cols = row_elem.findAll('td')
             output_row = [player_name] # Will contain the current row, which will be appended to output_rows
             for col in cols:
-                agent_elem = col.find('img', alt=True) # Finding the data containing agent
-                usage_elem = col.find('span')
+                agent_elem = col.find('img', alt=True) # If currently in the Agent column, this will be found
+                usage_elem = col.find('span') # If currently in the Usage column, this will be found
                 if (agent_elem is not None): # If currently on the Agent column of that respective row
                     output_row.append(agent_elem['alt'])
                 elif (usage_elem is not None): # If currently on the Usage column of that respective row
