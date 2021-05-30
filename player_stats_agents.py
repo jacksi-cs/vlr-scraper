@@ -4,9 +4,19 @@ import csv
 import time
 
 ## CHANGEABLE VARIABLES ##
-file_name = "output.csv"
-date_range = "all" # 30d, 60d, 90d, or all
-url = "https://www.vlr.gg/stats/?event_group_id=all&event_id=all&region=all&country=all&min_rounds=1000&min_rating=1600&agent=all&map_id=all&timespan="+date_range
+event_group_id = "all"
+event_id = "all"
+region = "all"
+country = "all"
+min_rounds = "1000"
+min_rating = "1600"
+agent = "all"
+map_id = "all"
+timespan = "60d"
+
+file_name = "player_stats_agents_" + event_group_id + "_" + event_id + "_" + region + "_" + country + "_" + min_rounds + "_" + min_rating + "_" + agent + "_" + map_id + "_" + timespan + ".csv"
+
+url = "https://www.vlr.gg/stats/?event_group_id=" + event_group_id + "&event_id=" + event_id + "&region=" + region + "&country=" + country + "&min_rounds=" + min_rounds + "&min_rating=" + min_rating + "&agent=" + agent + "&map_id=" + map_id + "&timespan="+timespan
 
 driver = webdriver.Chrome()
 driver.get(url)
@@ -16,13 +26,13 @@ output_rows = [] # Will contain all rows needed to be added to csv file
 "Iterates through all player elements, visiting each player profile to scrape data"
 player_elem_list = driver.find_elements_by_xpath("//td[@class='mod-player mod-a']")
 for index in range (1,len(player_elem_list)+1):
-    xpath_test = "(//td[@class='mod-player mod-a'])[" + str(index) + "]"
-    driver.find_element_by_xpath(xpath_test).click() # Player element, when clicked goes to profile
+    player_xpath = "(//td[@class='mod-player mod-a'])[" + str(index) + "]"
+    driver.find_element_by_xpath(player_xpath).click() # Player element, when clicked goes to profile
 
     "Clicking the correct date range for player profile (30d,60d,90d,all)"
     filter_list = driver.find_elements_by_xpath("//a[@class='player-stats-filter-btn ']")
     for elem in filter_list:
-        if (elem.text.strip().lower() == date_range):
+        if (elem.text.strip().lower() == timespan):
             time.sleep(0.1)
             driver.execute_script("arguments[0].click();", elem)
             break
@@ -40,16 +50,16 @@ for index in range (1,len(player_elem_list)+1):
                 agent_elem = col.find('img', alt=True) # Finding the data containing agent
                 usage_elem = col.find('span')
                 if (agent_elem is not None): # If currently on the Agent column of that respective row
-                    output_row.append(test['alt'])
+                    output_row.append(agent_elem['alt'])
                 elif (usage_elem is not None): # If currently on the Usage column of that respective row
-                    val = test2.text
+                    val = usage_elem.text
                     output_row.append(val[val.find("(")+1:val.find(")")])
                 else: # Every other column
                     output_row.append(col.text.strip())
             output_rows.append(output_row)
 
     "Goes back from the player profile to the stats menu"
-    if (date_range != "60d"):
+    if (timespan != "60d"):
         driver.back()
     driver.back()
     time.sleep(0.1)
